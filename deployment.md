@@ -1,25 +1,32 @@
 # Hydro Software Deployment and Automation
 
-This semester I developed the new version of Olin Hydroponics Club's automation architecture. For more information on the design see [quality.md](quality.md). This software was developed to be maintainable, standardized, and easy to deploy. As an offshoot of this architecture I also built a simple image API that stores and serves images of our plants. This storage API was written to be easy to deploy and update.
+This semester I deployed starter version of Olin Hydroponics Club's API. More information on the API [here](https://github.com/tzou2024/hydrangea).
+
 
 Below are some descriptions of the systems used to assit with deployment and maintainability.
 
-## Git Hooks
-We created a centralized repository for git hooks in our github organization. This repository was intended to act as a centralized location to store organization wide hooks that should be used in every repository. When a new repository is created, a local hard link should be created from the local copy of the hooks github repository to a /hooks folder in the new repostory. This keeps the hooks centralized, and makes it easier to update them in one place later on. This also allows the hooks to be checked into github and their versions tracked. A full setup guide can be found [here](https://docs.google.com/document/d/1-xlYPpF-vdUu03zkPbF8pHdN6CtZb2e-jaxFh9VxUsk/edit?usp=sharing). 
-
 
 ## Continuous Integration
-When code is merged to Mother Nature main branch, two github workflows are triggered. 
 
-The first github workflow builds the code, runs [go vet](https://pkg.go.dev/cmd/vet) to check for errors, and runs [golangci-lint](https://github.com/golangci/golangci-lint) to check the code style. This github workflow can be found [here](https://github.com/Olin-Hydro/mother-nature/blob/main/.github/workflows/build-lint.yaml). This github workflow creates a standard styling guideline through golangci-lint, and allows any contributor to get quick feedback on the latest build after pushing.
+When code is pushed to the Hydrangrea main branch, 3 github workflows are triggered. 
 
-The second github workflow runs the test suite on the latest version of the code. This workflow can be found [here](https://github.com/Olin-Hydro/mother-nature/blob/main/.github/workflows/test.yaml). This workflow allows developers to get immediate feedback on the functionality of their code upon pushing to the remote repository.
+This first github workflow is a [linter](https://github.com/py-actions/flake8) that installs the Python flake8 package and excesutes flake8 on python files. To check for linting errors. The second gitub workflow is a [formatter](rickstaa/action-black@v1) to check the formatting the python code. These two workflows makes a standard styling guideline for all integrated python code that is pushed. The third github workflow the unit tests made for each route using pytest. This means that developer can get immediate feedback on the functionality of the code once it has been pushed to the remote repository.
+
+Links to workflows:
+
+[Linting](https://github.com/tzou2024/hydrangea/blob/main/.github/workflows/lint.yml)
+
+[Autoformatting](https://github.com/tzou2024/hydrangea/blob/main/.github/workflows/black.yml)
+
+[Testing](https://github.com/tzou2024/hydrangea/blob/main/.github/workflows/testing.yml)
+
+## Dockerization
+I also containerized the API using Docker. I used docker to create a standard container that can run the FastAPI app. I build a Docker image using a [Dockerfile](https://github.com/tzou2024/hydrangea/blob/main/Dockerfile). I also pushed the image to [dockerhub](https://hub.docker.com/r/tzou2024/hydroapi) so that anyone could pull and run it. 
 
 ## Configuring Cloud Machines
-Before deploying software, we needed somewhere to deploy it to. We used hetzner instead of AWS for moral and financial reasons. After creating a basic cloud server, the main setup that we needed to perform was to adjust the security settings. We reduced the security to allow any traffic on port 80 over http to access the server, setting the stage for our image API.
+I deployed my app using AWS Elastic Beanstalk, a service that serves as an abstraction layer on top of ECS. Elastic Beanstalk automatically handles the deployment—from capacity provisioning, load balancing, and auto scaling to application health monitoring. I used a EC2 T2.micro instance. I also seperately set up a mongoDB atlas database so I don't store the database locally. You can acess my deployment [here](http://hydroapi-env.eba-p7wttzu3.us-east-1.elasticbeanstalk.com/docs). Elastic Beanstalk uses docker-compose to pull and run the image, so I also setup a [docker-compose.yml](https://github.com/tzou2024/hydrangea/blob/main/docker-compose.yml) file.
 
 ## Automate Deployment
-I simplified the deployment process for the image storage API ([link](https://github.com/jonaskaz/plant-analysis/tree/main/storage_api)) using Docker and Ansible. The API is a simple FastAPI app that takes images and stores them locally, making them available via GET request by timestamp. Docker was used to create a standard container that can reliably run the FastAPI app [link](https://github.com/jonaskaz/plant-analysis/blob/main/storage_api/Dockerfile). This docker image is also uploaded to a dockerhub repository so that the remote server can pull it for deployment. Next, an ansible playbook was created to set up the remote server. The ansible playbook connects to the host, installs relevant packages, pulls the latest docker image for the API and runs it. The playbook can be found [here](https://github.com/jonaskaz/plant-analysis/blob/main/storage_api/ansible). This playbook makes the API portable to many cloud servers and providers, as it can be deployed by simply providing a new IP address host.
+I automated the deployment process using github actions. My workflow only redeploys the app on pushes that are tagged as releases using github tags, rather than redeploying everytime there is a push to main. The action builds the docker image, utlizing github secrets for the environemnt variables, zips up a deployment package, and deploys it to elastic beanstalk with a timestamp version label in EB.
 
-## Conclustion
-The above implementations demonstrate my ability to write git hooks, automate testing and deployment, and deploy software on cloud infrastructure. 
+[deployment workflow](https://github.com/tzou2024/hydrangea/blob/main/.github/workflows/docker.yml)
