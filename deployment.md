@@ -20,8 +20,8 @@ Links to workflows:
 
 [Testing](https://github.com/tzou2024/hydrangea/blob/main/.github/workflows/testing.yml)
 
-## Dockerization
-I also containerized the API using Docker. I used docker to create a standard container that can run the FastAPI app. I build a Docker image using a [Dockerfile](https://github.com/tzou2024/hydrangea/blob/main/Dockerfile). I also pushed the image to [dockerhub](https://hub.docker.com/r/tzou2024/hydroapi) so that anyone could pull and run it. 
+## Standardization
+I also containerized the API using Docker. I used docker to create a standard container that can run the FastAPI app. I built a Docker image using a [Dockerfile](https://github.com/tzou2024/hydrangea/blob/main/Dockerfile). I also pushed the image to [dockerhub](https://hub.docker.com/r/tzou2024/hydroapi) so that anyone could pull and run it. Throughout developement, I also used python virtual environments to keep track of requirements and versions.
 
 ## Configuring Cloud Machines
 I deployed my app using AWS Elastic Beanstalk, a service that serves as an abstraction layer on top of ECS. Elastic Beanstalk automatically handles the deployment—from capacity provisioning, load balancing, and auto scaling to application health monitoring. I used a EC2 T2.micro instance. I also seperately set up a mongoDB atlas database so I don't store the database locally. You can acess my deployment [here](http://hydroapi-env.eba-p7wttzu3.us-east-1.elasticbeanstalk.com/docs). Elastic Beanstalk uses docker-compose to pull and run the image, so I also setup a [docker-compose.yml](https://github.com/tzou2024/hydrangea/blob/main/docker-compose.yml) file.
