@@ -22,7 +22,7 @@ Example notes from meeting:
 
 I gave tutorials on Github, Python, Virtual Environemnts, API's and Databases to some of the newer members. 
 
-In the first half of the semester we got a bit developement-crazy in order to expose new programmers to the overall control flow and syntax, and built out a bunch of components without testing any of them. Once people started understanding how things worked, we decided to restart developement and slowly reintegrate components only if they pass expected behavior through unit tests. [Here](https://github.com/Olin-Hydro/hydrangea/commit/241e65aa7dfa7c46460a29289b85771593d4152b) is an example of collaboration and guidance from the developement-crazy phase; we were able to teach a person who was practically new to programming about API schemas and routing to the point where we could assign a new appropriately scope task that they could complete on their own.
+In the first half of the semester we got a bit developement-crazy in order to expose new programmers to the concepts, overall control flow, and syntax. These were helpful learning exercises, but we neglected to do testing on all of the new components. Once people started understanding how things worked, we decided to restart developement and slowly reintegrate components only if they pass expected behavior through unit tests. [Here](https://github.com/Olin-Hydro/hydrangea/commit/241e65aa7dfa7c46460a29289b85771593d4152b) is an example of collaboration and guidance from the developement-crazy phase; we were able to teach a person who was practically new to programming about API schemas and routing to the point where we could assign a new appropriately scope task that they could complete on their own.
 
 
 
